@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class compensate : MonoBehaviour
 {
-    public float centre;
+    public Vector2 centre;
+    [Range(0, 500.0f)]
     public float radius;
+    public Material mat;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +26,7 @@ public class compensate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        mat.SetVector("centre", centre);
+        mat.SetFloat("radius", radius);
     }
 }
