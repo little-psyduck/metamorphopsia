@@ -55,28 +55,25 @@ Shader "2D/Texture Blend"
 
                uniform float2 centre;
                uniform float radius;
+               uniform float extent;
 
                float4 frag(Fragment IN) : COLOR
                {
-                   float2 relevent_position = IN.uv_MainTex - centre;
-                   float distFromCenter = length(relevent_position);
-                   distFromCenter /= radius;
+                   float2 relevent_position = IN.uv_MainTex-centre;
+                   float distFromCenter = distance(IN.uv_MainTex, centre);
+                   float2 offset = normalize(relevent_position) * abs(distFromCenter - radius) * extent;
 
-                   o.Color(1.0, 1.0, 1.0, 1.0);
-                   //
-                   half4 c = tex2D(_MainTex, IN.uv_MainTex);
-                   o.rgb = c.rgb;
+                   if (distFromCenter <= radius)
+                       relevent_position = relevent_position + offset;
 
-                   if (c.r >= _Range && c.g >= _Range && c.b >= _Range)
-                   {
-                       o.a = 0;
-                   }
-                   else
-                   {
-                       o.a = 1;
+                   half4 c = tex2D(_MainTex, relevent_position+centre);
+
+                   if (distFromCenter <= radius) {
+                       if (c.r >= _Range && c.g >= _Range && c.b >= _Range)
+                           c.a = 0;
                    }
 
-                   return o;
+                   return c;
                }
 
                ENDCG

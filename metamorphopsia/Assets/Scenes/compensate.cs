@@ -8,19 +8,14 @@ public class compensate : MonoBehaviour
     [Range(0, 500.0f)]
     public float radius;
     public Material mat;
+    [Range(0, 2.0f)]
+    public float extent;
     // Start is called before the first frame update
     void Start()
     {
-        SpriteRenderer original_pic = this.gameObject.GetComponent<SpriteRenderer>();
-        Texture2D post_pic = new Texture2D(799, 798);
-        for (int i = 0; i < post_pic.height; ++i)
-        {
-            for (int j = 0; j < post_pic.width; ++j)
-            {
-                post_pic.SetPixel(j, i, Color.blue);
-            }
-        }
-        post_pic.Apply();
+        centre.x = 0.52f;centre.y = 0.5f;
+        radius = 0.22f;
+        extent = 0.15f;
     }
 
     // Update is called once per frame
@@ -28,5 +23,6 @@ public class compensate : MonoBehaviour
     {
         mat.SetVector("centre", centre);
         mat.SetFloat("radius", radius);
+        mat.SetFloat("extent", extent);
     }
 }
