@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class compensate : MonoBehaviour
 {
-    public Vector2 centre;
+    public Vector2 centre_gather;
+    public Vector2 centre_shape;
     [Range(0, 500.0f)]
     public float radius;
     public Material mat;
@@ -13,7 +14,8 @@ public class compensate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        centre.x = 0.52f;centre.y = 0.5f;
+        centre_shape.x = 0.52f; centre_shape.y = 0.5f;
+        centre_gather.x = 0.48f; centre_gather.y = 0.5f;
         radius = 0.22f;
         extent = 0.15f;
     }
@@ -21,7 +23,9 @@ public class compensate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mat.SetVector("centre", centre);
+        mat.SetVector("centre_shape", centre_shape);
+        mat.SetVector("centre_gather", centre_gather);
+
         mat.SetFloat("radius", radius);
         mat.SetFloat("extent", extent);
     }
