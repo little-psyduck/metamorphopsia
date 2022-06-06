@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class ShowScene : SceneState
 {
-    readonly string scene_name = "ShowScene";
+    readonly string scene_name = "WrapScene";
     public override void OnAwake()
     {
         if (SceneManager.GetActiveScene().name != scene_name)

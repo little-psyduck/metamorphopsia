@@ -11,7 +11,6 @@ public class BasePanel
     public UIManager ui_manager { get; set; }
     public virtual void OnAwake() { }
     public virtual void OnSleep() { ui_manager.Destroy_UI(this.ui_type); }
-    public virtual void OnPause() { }
-    public virtual void OnResume() { }
-
+    public virtual void OnPause() { ui_tool.GetOrAddComponent<CanvasGroup>().interactable = false; }
+    public virtual void OnResume() { ui_tool.GetOrAddComponent<CanvasGroup>().interactable = true; }
 }

@@ -21,6 +21,7 @@ public class StartScene : SceneState
     public override void OnSleep()
     {
         SceneManager.sceneLoaded -= SceneLoaded;
+        panel_manager.Pop();
     }
 
     private void SceneLoaded(Scene scene,LoadSceneMode load)

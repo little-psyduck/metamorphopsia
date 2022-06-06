@@ -9,10 +9,15 @@ public class GameRoot : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+            Instance = this;
         scene_system = new SceneSystem();
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this.gameObject);
     }
     private void Start()
     {
