@@ -8,7 +8,7 @@ public class outside_camera : MonoBehaviour
     WebCamTexture input_tex;
     void Start()
     {
-        StartCoroutine(CallCamera());
+        //StartCoroutine(CallCamera());
     }
 
     IEnumerator CallCamera()
