@@ -2,52 +2,36 @@ using UnityEngine;
 
 namespace CustomGrid
 {
-    public partial class MeshAdjuster
+    public sealed partial class GridGeneration
     {
-        Vector3[] verticesPosition;
-        int verticesWidthNumber = 0, verticesHeightNumber = 0;
-        float width = 0, height = 0;
-
-        Vector2[] UVCoordinate;
-        int[] triangles;
-        
         bool initilize = true;
-
-        GameObject[] pointDecal;
-        GameObject pointImage;
-
-        private bool SetVerticesNumber(uint verticesDensity)
+        private void SetVerticesNumber(uint verticesDensity)
         {
+            meshSample = new Mesh() { name = "StoredMesh" };
+
             width = (float)Screen.width / 100.0f;
             height = (float)Screen.height / 100.0f;
-            float screenRatio = height / width;
+            screenRatio = height / width;
 
             verticesWidthNumber = (int)(verticesDensity * 10);
             verticesHeightNumber = (int)((float)verticesWidthNumber * screenRatio);
-            int verticesNumber = (++verticesHeightNumber) * (++verticesWidthNumber);
-
+            verticesNumber = (++verticesHeightNumber) * (++verticesWidthNumber);
 
             if (verticesWidthNumber <= 10 || verticesHeightNumber <= 5)
             {
                 Debug.Log("Vertices are too few, generation error.");
                 initilize = false;
-                return false;
+                return;
             }
-
-            verticesPosition = new Vector3[verticesNumber];
-            UVCoordinate = new Vector2[verticesNumber];
-            pointDecal = new GameObject[verticesNumber];
-
-            triangles = new int[(verticesHeightNumber - 1) * (verticesWidthNumber - 1) * 6];
-
-            return true;
         }
 
-        private void GenerateVertices()
+        private void SetVertices(Vector3[] verticesData = null, Vector2[] UVData = null)
         {
             float verticesWidthDistance = width / (verticesWidthNumber - 1);
             float verticesHeightDistance = height / (verticesHeightNumber - 1);
 
+            Vector3[] verticesPosition = new Vector3[verticesNumber];
+            Vector2[] UVCoordinate = new Vector2[verticesNumber];
 
             for (int yIndex=0; yIndex < verticesHeightNumber; ++yIndex)
             {
@@ -55,20 +39,25 @@ namespace CustomGrid
                 {
                     int index = xIndex + yIndex * verticesWidthNumber;
 
-                    verticesPosition[index] = new Vector3(xIndex * verticesWidthDistance - width / 2,
-                        yIndex * verticesHeightDistance - height / 2, 0);
+                    if (verticesData == null)
+                        verticesPosition[index] = new Vector3(xIndex * verticesWidthDistance - width / 2,
+                            yIndex * verticesHeightDistance - height / 2, 0);
 
-                    UVCoordinate[index] = new Vector2((xIndex * verticesWidthDistance) / width,
-                        (yIndex * verticesHeightDistance) / height);
-                    pointDecal[index] = GameObject.Instantiate(pointImage);
-                    pointDecal[index].transform.position = verticesPosition[index];
+                    if (UVData == null)
+                        UVCoordinate[index] = new Vector2((xIndex * verticesWidthDistance) / width,
+                            (yIndex * verticesHeightDistance) / height);
                 }
             }
+
+            meshSample.vertices = (verticesData == null ? verticesPosition : verticesData);
+            meshSample.uv = (UVData == null ? UVCoordinate : UVData);
         }
 
-        void GenerateTriangle()
+        void SetTriangles()
         {
             int Index = 0;
+            int[] triangles = new int[(verticesHeightNumber - 1) * (verticesWidthNumber - 1) * 6];
+
             for (int y = 0; y < verticesHeightNumber - 1; ++y)
             {
                 for (int x = 0; x < verticesWidthNumber - 1; ++x)
@@ -89,41 +78,32 @@ namespace CustomGrid
                     triangles[Index++] = (y + 0) * verticesWidthNumber + (x + 1);
                 }
             }
+
+            meshSample.triangles = triangles;
         }
 
-        void LoadPointImage()
+        public Mesh Initilize(uint verticesDensity = 1)
         {
-            const string pointPath = "Images/Point";
-            pointImage = Resources.Load(pointPath) as GameObject;
-            if (pointImage == null)
-            {
-                Debug.Log("Loading point image fault.");
-                initilize = false;
-            }
-        }
-
-        public bool Initilize(ref Mesh mesh, uint verticesDensity = 1)
-        {
-            LoadPointImage();
             if (verticesDensity > 4)
             {
                 Debug.Log("Too much vertices.");
                 initilize = false;
-                return initilize;
+                return null;
             }
-            if (!SetVerticesNumber(verticesDensity))
+
+            subdivisionLevel = verticesDensity;
+
+            SetVerticesNumber(verticesDensity);
+            SetVertices();
+            SetTriangles();
+
+            if (!initilize)
             {
-                return initilize;
+                Debug.LogError("Grid generation error.");
+                return null;
             }
 
-            GenerateVertices();
-            GenerateTriangle();
-
-            mesh.vertices = verticesPosition;
-            mesh.triangles = triangles;
-            mesh.uv = UVCoordinate;
-
-            return initilize;
+            return meshSample;
         }
     }
 }

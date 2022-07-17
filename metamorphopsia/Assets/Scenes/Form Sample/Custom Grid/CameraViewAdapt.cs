@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraView : MonoBehaviour
+public class CameraViewAdapt : MonoBehaviour
 {
     public float sceneWidth = 19.2f;
     

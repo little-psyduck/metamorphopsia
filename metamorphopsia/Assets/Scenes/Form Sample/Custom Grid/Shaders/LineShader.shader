@@ -39,7 +39,7 @@ Shader "Sample/LineShader"
             {
                 float4 frag_color;
                 frag_color = _Color;
-                    
+
                 return frag_color;
             }
             ENDCG
