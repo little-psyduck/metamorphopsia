@@ -10,7 +10,7 @@ namespace CustomGrid
 
         public Mesh Subdivision(Mesh mesh)
         {
-            if (++subdivisionLevel > 10)
+            if (++subdivisionLevel > 5)
             {
                 Debug.Log("The mesh can not be divided anymore.");
                 return null;

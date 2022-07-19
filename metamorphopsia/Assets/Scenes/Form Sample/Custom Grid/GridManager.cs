@@ -38,9 +38,4 @@ public class GridManager : MonoBehaviour
             ExportGrid();
         gridDecorator.Update(GetComponent<MeshFilter>().mesh, transform);
     }
-
-    private void OnRenderObject()
-    {
-        gridDecorator.DrawWire();
-    }
 }

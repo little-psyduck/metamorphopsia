@@ -10,8 +10,8 @@ namespace CustomGrid
             vertices = mesh.vertices;
 
             LoadPointModel();
-            initilizePoints();
-            initilizeWireframe();
+            InitilizePoints();
+            InitilizeWireframe();
         }
 
         public void Update(Mesh mesh, Transform transform_)
@@ -19,7 +19,20 @@ namespace CustomGrid
             triangles = mesh.triangles;
             vertices = mesh.vertices;
             transform = transform_;
+
+            if (points.Length != vertices.Length)
+            {
+                Reconstruct();
+            }
+
             UpdatePoints();
+            UpdateLines();
+        }
+
+        private void Reconstruct()
+        {
+            ReconstructPoints();
+            ReconstructLines();
         }
 
         //attribute

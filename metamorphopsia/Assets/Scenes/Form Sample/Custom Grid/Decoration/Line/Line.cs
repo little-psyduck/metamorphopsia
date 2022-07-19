@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Line
 {
-    private float scale = 0.01f;
+    private float scale;
     private Vector3[] points;
 
     private GameObject lineObject;
@@ -12,19 +12,53 @@ public class Line
 
     private Material lineMaterial;
 
-    public Line(Vector3[] points_, Material lineMaterial_ = null)
+    public Line(Vector3[] points_, Material lineMaterial_ = null, float sacle_ = 0.03f, string lineName = null)
     {
+        lineObject = new GameObject();
+        lineObject.name = lineName == null ? "Default Line" : lineName;
+
         this.lineMaterial = lineMaterial_;
         if (lineMaterial == null)
             lineMaterial = new Material(Shader.Find("Standard"));
 
-        this.points = points_;
+        points = new Vector3[points_.Length];
+        for (int i = 0; i < points.Length; ++i)
+            points[i] = points_[i];
+
+        this.scale = sacle_;
+
         lineMesh = new Mesh();
         GenerateLine();
         GenerateLineTriangle();
 
         lineObject.AddComponent<MeshFilter>().mesh = lineMesh;
         lineObject.AddComponent<MeshRenderer>();
+        lineObject.GetComponent<Renderer>().material = lineMaterial;
+    }
+
+    public void SetTransfomParent(Transform transform)
+    {
+        lineObject.transform.SetParent(transform);
+    }
+
+    public void SetPoint(int index, Vector3 value)
+    {
+        points[index] = value;
+        GenerateLine();
+    }
+
+    public bool ResetPoints(Vector3[] vertices)
+    {
+        for (int i = 0; i < points.Length; ++i)
+        {
+            if (points[i] != vertices[i])
+            {
+                SetPoint(i, vertices[i]);
+
+                return true;
+            }
+        }
+        return false;
     }
 
     void GenerateLine()
@@ -42,6 +76,8 @@ public class Line
             else
             {
                 normals[i] = ((new Vector3(-vectors[i].y, vectors[i].x, 0f).normalized + normals[i - 1])).normalized;
+                float cosineTheta = Mathf.Clamp(Vector3.Dot(normals[i - 1], normals[i]), 0.70710678118f,1);
+                normals[i] /= cosineTheta;
             }
         }
 

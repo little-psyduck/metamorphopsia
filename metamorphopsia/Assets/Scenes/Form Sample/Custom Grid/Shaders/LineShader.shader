@@ -6,7 +6,7 @@ Shader "Sample/LineShader"
     }
     SubShader
     {
-        Tags { "RenderType"="transparent" }
+        Tags { "RenderType"="Overlay" }
 
         Pass
         {

@@ -12,6 +12,9 @@ namespace CustomGrid
 
         /*mesh information*/
         public uint subdivisionLevel { get; set; }
+        public int GetWidthVerticesNumber() { return verticesWidthNumber; }
+        public int GetHeightVerticesNumber() { return verticesHeightNumber; }
+
 
         int verticesWidthNumber = 0;
         int verticesHeightNumber = 0;
